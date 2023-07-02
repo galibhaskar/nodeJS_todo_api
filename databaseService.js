@@ -18,34 +18,54 @@ function queryExecutor(query) {
   return new Promise((resolve, reject) => {
     pool.query(query, function (err, result) {
       if (err) {
-        console.log(err);
-        reject(err);
+        // console.log("error at executor function", err.stack);
+        reject(err.stack);
       }
       resolve(result);
     });
   });
 }
 
-export function insertIntoDB(taskName, userID) {
+export async function insertIntoDB(taskName, userID) {
   let query = `insert into todo values(NULL, '${taskName}', NOW(), ${userID});`;
 
-  return queryExecutor(query).then((res) => res.insertId);
+  try {
+    const res = await queryExecutor(query);
+    return { data: res, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
 }
 
-export function fetchAllItems() {
+export async function fetchAllItems() {
   let query = `select * from todo;`;
 
-  return queryExecutor(query);
+  try {
+    const res = await queryExecutor(query);
+    return { data: res, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
 }
 
-export function updateItem(itemId, taskName) {
+export async function updateItem(itemId, taskName) {
   let query = `update todo set task_name = '${taskName}' where id = ${itemId};`;
 
-  return queryExecutor(query);
+  try {
+    const res = await queryExecutor(query);
+    return { data: res, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
 }
 
-export function deleteItem(itemID) {
+export async function deleteItem(itemID) {
   let query = `delete from todo where id=${itemID};`;
 
-  return queryExecutor(query);
+  try {
+    const res = await queryExecutor(query);
+    return { data: res, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
 }
